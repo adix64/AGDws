@@ -8,6 +8,8 @@ public class ThirdPersonCamera : MonoBehaviour
     float pitch = 0f, yaw = 0f;
     public Transform player;
     public float distToTarget = 4f;
+    public float minPitch = -45f, maxPitch = 45f;
+    public Vector3 cameraOffset;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,9 +23,12 @@ public class ThirdPersonCamera : MonoBehaviour
         pitch -= Input.GetAxis("Mouse Y");
         yaw   += Input.GetAxis("Mouse X");
 
+        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);//limitare unghi de view
+
         //scriem rotatia cu unghiurile corespunzatoare
         transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
         //de la pozitia playerului, ne dam in spate distToTarget unitati
-        transform.position = player.position - transform.forward * distToTarget;
+        transform.position = player.position - transform.forward * distToTarget +
+                        transform.TransformDirection(cameraOffset); //pozitionare camera grid de interes
     }
 }
